@@ -5,7 +5,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 }
 
 use Bitrix\Main\Application;
-use Bitrix\Main\Data\Cache;
 use Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\SystemException;
@@ -13,7 +12,7 @@ use Bitrix\Main\SystemException;
 class CVekovCommentsForm extends CBitrixComponent
 {
     public $requiredModules = ['iblock'];
-	public $requiredFields = ['NAME', 'LINK', 'COMMENT'];
+    public $requiredFields = ['NAME', 'LINK', 'COMMENT'];
 
     protected $cacheDir;
     protected $cacheID;
@@ -105,3 +104,4 @@ class CVekovCommentsForm extends CBitrixComponent
 	}
 
 }
+
