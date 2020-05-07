@@ -5,7 +5,7 @@ $APPLICATION->SetTitle('Title');
 
 <?php
 
-function processRequests()
+function processRequests2()
 {
     $request = Bitrix\Main\Context::getCurrent()->getRequest();
     $id = $request->getQuery('ID');
@@ -13,7 +13,7 @@ function processRequests()
     return $id;
 }
 
-$elementId = processRequests();
+$elementId = processRequests2();
 
 $APPLICATION->IncludeComponent(
     'ivekov:news.detail',

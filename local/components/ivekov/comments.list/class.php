@@ -42,7 +42,6 @@ class CVekovCommentsList extends CBitrixComponent
             } else {
                 if ($cache->startDataCache(86400, $this->cacheID, $this->cacheDir)) {
                     $this->checkModules();
-                    $this->prepareData();
                     $this->buildResult();
 
                     $cache->endDataCache([
@@ -53,17 +52,6 @@ class CVekovCommentsList extends CBitrixComponent
             $this->includeComponentTemplate();
         } catch (Exception $e) {
             $this->arResult['ERROR'] = $e->getMessage();
-        }
-    }
-
-    protected function prepareData()
-    {
-        $this->arResult['IBLOCK'] = [];
-        if ($this->arParams['IBLOCK_ID']) {
-            $this->arResult['IBLOCK'] = CIBlock::GetByID($this->arParams['IBLOCK_ID'])->Fetch();
-        }
-        if (!$this->arResult['IBLOCK']) {
-            throw new Exception('Инфоблок не найден');
         }
     }
 
