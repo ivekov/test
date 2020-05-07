@@ -4,7 +4,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     die();
 }
 
-use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\SystemException;
@@ -52,56 +51,55 @@ class CVekovCommentsForm extends CBitrixComponent
 
     protected function buildResult()
     {
-		$this->processRequests();
+        $this->processRequests();
     }
 
-	protected function processRequests()
-	{
-		$request = Bitrix\Main\Context::getCurrent()->getRequest();
-		if ($request->getQuery('SAVE')) {
-			$arFields['NAME'] = $request->getQuery('NAME');
-			$arFields['LINK'] = $request->getQuery('LINK');
-			$arFields['COMMENT'] = $request->getQuery('COMMENT');
-			$errors = $this->checkRequiredFields($arFields);
-			if (!$errors) {
-				$this->createComment($arFields);
-			} else {
-				$this->arResult['MISSING_FIELDS'] = $errors;
-			}
-		}
-	}
+    protected function processRequests()
+    {
+        $request = Bitrix\Main\Context::getCurrent()->getRequest();
+        if ($request->getQuery('SAVE')) {
+            $arFields['NAME'] = $request->getQuery('NAME');
+            $arFields['LINK'] = $request->getQuery('LINK');
+            $arFields['COMMENT'] = $request->getQuery('COMMENT');
+            $errors = $this->checkRequiredFields($arFields);
+            if (!$errors) {
+                $this->createComment($arFields);
+            } else {
+                $this->arResult['MISSING_FIELDS'] = $errors;
+            }
+        }
+    }
 
-	protected function createComment($fields)
-	{
-		global $USER;
-		$el = new \CIBlockElement;
+    protected function createComment($fields)
+    {
+        global $USER;
+        $el = new \CIBlockElement();
 
-		$PROP = [];
-		$PROP[$this->arParams['LINK']] = $fields['LINK'];
-		
-		$arLoadProductArray = Array(
-		  "MODIFIED_BY"    => $USER->GetID(),
-		  "IBLOCK_SECTION_ID" => false,
-		  "IBLOCK_ID"      => $this->arParams['IBLOCK_ID'],
-		  "PROPERTY_VALUES"=> $PROP,
-		  "NAME"           => $fields['NAME'],
-		  "ACTIVE"         => "Y",
-		  "DETAIL_TEXT"    => $fields['COMMENT']
-		);
-		
-		$el->Add($arLoadProductArray);
-	}
+        $PROP = [];
+        $PROP[$this->arParams['LINK']] = $fields['LINK'];
 
-	protected function checkRequiredFields($fields)
-	{
-		$missingFields = [];
-		foreach ($this->requiredFields as $field) {
-			if (!in_array($field, $fields)) {
-				$missingFields[] = 'Missing '.$field;
-			}
-		}
-		return false;
-	}
+        $arLoadProductArray = [
+            'MODIFIED_BY'       => $USER->GetID(),
+            'IBLOCK_SECTION_ID' => false,
+            'IBLOCK_ID'         => $this->arParams['IBLOCK_ID'],
+            'PROPERTY_VALUES'   => $PROP,
+            'NAME'              => $fields['NAME'],
+            'ACTIVE'            => 'Y',
+            'DETAIL_TEXT'       => $fields['COMMENT'],
+        ];
 
+        $el->Add($arLoadProductArray);
+    }
+
+    protected function checkRequiredFields($fields)
+    {
+        $missingFields = [];
+        foreach ($this->requiredFields as $field) {
+            if (!in_array($field, $fields)) {
+                $missingFields[] = 'Missing '.$field;
+            }
+        }
+
+        return false;
+    }
 }
-
