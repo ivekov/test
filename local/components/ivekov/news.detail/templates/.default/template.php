@@ -33,6 +33,24 @@ $this->setFrameMode(true);
 </main>
 
 
-
+<?
+$APPLICATION->IncludeComponent(
+	"ivekov:comments.list", 
+	".default", 
+	array(
+		"IBLOCK_ID" => "16",
+		"COMPONENT_TEMPLATE" => ".default",
+		"IBLOCK_TYPE" => "rating",
+		"COMPOSITE_FRAME_MODE" => "A",
+		"COMPOSITE_FRAME_TYPE" => "AUTO",
+		"CACHE_TYPE" => "A",
+		"CACHE_TIME" => "36000",
+		"ELEMENT_ID" => $arResult['ID'],
+		"LINK" => "97",
+		"ELEMENTS_COUNT" => "5"
+	),
+	false
+);
+?>
 
 

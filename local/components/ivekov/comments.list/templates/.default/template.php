@@ -8,7 +8,8 @@ $this->setFrameMode(true);
 	<div class="animate-up animated">
 		<div class="section-box" id="comments_list_wrap">
 			<ol class="comment-list" id="comments_list">
-				<? foreach($arResult['ITEMS'] as $ID => $item):?>
+				<? if ($arResult['ITEMS']):?>
+				<? foreach ($arResult['ITEMS'] as $ID => $item):?>
 				<li class="comment" id="<?=$this->GetEditAreaId($arCommentsF['ID']);?>">
 					<article class="comment-body">
 						<div class="comment-avatar"> <img src="/upload/no_photo.png" alt="avatar"> </div>
@@ -29,6 +30,9 @@ $this->setFrameMode(true);
 				<?
 				endforeach;
 				?>
+				<? else:?>
+				<h3>Нет ни одного комментария</h3>
+				<? endif;?>
 				<!-- .comment -->
 			</ol>
 			<!-- .comment-list -->
