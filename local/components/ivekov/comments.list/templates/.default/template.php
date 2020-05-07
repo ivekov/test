@@ -14,7 +14,7 @@ $this->setFrameMode(true);
 					<article class="comment-body">
 						<div class="comment-avatar"> <img src="/upload/no_photo.png" alt="avatar"> </div>
 						<div class="comment-content">
-							<div class="comment-meta"> <span class="name">Автор поста</span>
+							<div class="comment-meta"> <span class="name"><?=$item['NAME']?></span>
 								<time class="date" datetime="2015-03-20T13:00:14+00:00">
 									<?=$item["TIMESTAMP_X"]?>
 								</time>

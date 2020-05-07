@@ -4,7 +4,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     die();
 }
 
-use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\SystemException;
@@ -52,28 +51,13 @@ class CVekovCommentsForm extends CBitrixComponent
 
     protected function buildResult()
     {
-        $arParams = $this->arParams;
-
-        $arFilter = ['IBLOCK_ID' => $arParams['IBLOCK_ID'], '=PROPERTY_'.$arParams['LINK'] => $arParams['ELEMENT_ID'], 'ACTIVE' => 'Y'];
-        $arSelect = ['IBLOCK_ID', 'ID', 'NAME', 'ACTIVE', 'DETAIL_PICTURE', 'DETAIL_TEXT', 'PROPERTY_'.$arParams['LINK']];
-
-        $dbItem = CIBlockElement::GetList([], $arFilter, false, ['nPageSize' => $arParams['ELEMENTS_COUNT']], $arSelect);
-
-        $cacheManager = Application::getInstance()->getTaggedCache();
-        $cacheManager->startTagCache($this->cacheDir);
-
-        while ($element = $dbItem->Fetch()) {
-            $cacheManager->registerTag('iblock_id_'.$element['IBLOCK_ID']);
-            $this->arResult['ITEMS'][$element['ID']] = $element;
-        }
-
-        $cacheManager->endTagCache();
+        $this->processRequests();
     }
 
     protected function processRequests()
     {
         $request = Bitrix\Main\Context::getCurrent()->getRequest();
-        if ($request->getQuery['SAVE']) {
+        if ($request->getQuery('SAVE')) {
             $arFields['NAME'] = $request->getQuery('NAME');
             $arFields['LINK'] = $request->getQuery('LINK');
             $arFields['COMMENT'] = $request->getQuery('COMMENT');
@@ -88,6 +72,7 @@ class CVekovCommentsForm extends CBitrixComponent
 
     protected function createComment($fields)
     {
+        global $USER;
         $el = new \CIBlockElement();
 
         $PROP = [];

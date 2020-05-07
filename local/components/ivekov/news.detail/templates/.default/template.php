@@ -31,6 +31,22 @@
 
 <?
 $APPLICATION->IncludeComponent(
+	"ivekov:comments.form", 
+	".default", 
+	array(
+		"IBLOCK_ID" => "16",
+		"COMPONENT_TEMPLATE" => ".default",
+		"IBLOCK_TYPE" => "rating",
+		"CACHE_TYPE" => "N",
+		"CACHE_TIME" => "36000",
+		"ELEMENT_ID" => $arResult['ID'],
+		"LINK" => "97"
+	),
+	false
+);
+?>
+<?
+$APPLICATION->IncludeComponent(
 	"ivekov:comments.list", 
 	".default", 
 	array(
@@ -48,5 +64,4 @@ $APPLICATION->IncludeComponent(
 	false
 );
 ?>
-
 
