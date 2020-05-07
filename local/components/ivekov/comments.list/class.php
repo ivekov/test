@@ -83,7 +83,7 @@ class CVekovCommentsList extends CBitrixComponent
         $arFilter = ['IBLOCK_ID' => $arParams['IBLOCK_ID'], '=PROPERTY_'.$arParams['LINK'] => $arParams['ELEMENT_ID'], 'ACTIVE' => 'Y'];
         $arSelect = ['IBLOCK_ID', 'ID', 'NAME', 'ACTIVE', 'DETAIL_PICTURE', 'DETAIL_TEXT', 'PROPERTY_'.$arParams['LINK']];
 
-		$dbItem = CIBlockElement::GetList([], $arFilter, false, ['nPageSize' => $arParams['ELEMENTS_COUNT']], $arSelect);
+        $dbItem = CIBlockElement::GetList([], $arFilter, false, ['nPageSize' => $arParams['ELEMENTS_COUNT']], $arSelect);
 
         $cacheManager = Application::getInstance()->getTaggedCache();
         $cacheManager->startTagCache($this->cacheDir);
