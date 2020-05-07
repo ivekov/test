@@ -10,7 +10,7 @@ use Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\SystemException;
 
-class CVekovNewsDetail extends CBitrixComponent
+class CVekovCommentsList extends CBitrixComponent
 {
     public $requiredModules = ['iblock'];
 
@@ -33,7 +33,7 @@ class CVekovNewsDetail extends CBitrixComponent
     public function executeComponent()
     {
         try {
-            $this->cacheDir = '/news_detail/'.$this->arParams['ELEMENT_ID'].'/';
+            $this->cacheDir = '/comments_list/'.$this->arParams['ELEMENT_ID'].'/';
             $this->cacheID = serialize([[$this->arParams['IBLOCK_ID'], $this->arParams['ELEMENT_ID']], false]);
             $cache = Cache::createInstance();
             if ($cache->initCache(86400, $this->cacheID, $this->cacheDir)) {
@@ -52,17 +52,12 @@ class CVekovNewsDetail extends CBitrixComponent
             }
             $this->includeComponentTemplate();
         } catch (Exception $e) {
-            $this->AbortResultCache();
             $this->arResult['ERROR'] = $e->getMessage();
         }
     }
 
     protected function prepareData()
     {
-        if (!$this->arParams['ELEMENT_ID']) {
-            \Bitrix\Iblock\Component\Tools::process404('', true, true, true, '');
-        }
-
         $this->arResult['IBLOCK'] = [];
         if ($this->arParams['IBLOCK_ID']) {
             $this->arResult['IBLOCK'] = CIBlock::GetByID($this->arParams['IBLOCK_ID'])->Fetch();
@@ -84,49 +79,20 @@ class CVekovNewsDetail extends CBitrixComponent
     protected function buildResult()
     {
         $arParams = $this->arParams;
-        $arFilter = ['IBLOCK_ID' => $arParams['IBLOCK_ID'], '=ID' => $arParams['ELEMENT_ID'], 'ACTIVE' => 'Y'];
-        $arSelect = ['IBLOCK_ID', 'ID', 'NAME', 'ACTIVE', 'DETAIL_PICTURE', 'DETAIL_TEXT'];
 
-        $dbItem = \Bitrix\Iblock\ElementTable::getList([
-            'select' => $arSelect,
-            'filter' => $arFilter,
-            'limit'  => 1,
-        ]);
+        $arFilter = ['IBLOCK_ID' => $arParams['IBLOCK_ID'], '=PROPERTY_'.$arParams['LINK'] => $arParams['ELEMENT_ID'], 'ACTIVE' => 'Y'];
+        $arSelect = ['IBLOCK_ID', 'ID', 'NAME', 'ACTIVE', 'DETAIL_PICTURE', 'DETAIL_TEXT', 'PROPERTY_'.$arParams['LINK']];
+
+        $dbItem = CIBlockElement::GetList([], $arFilter, false, ['nPageSize' => $arParams['ELEMENTS_COUNT']], $arSelect);
 
         $cacheManager = Application::getInstance()->getTaggedCache();
         $cacheManager->startTagCache($this->cacheDir);
 
-        if ($element = $dbItem->Fetch()) {
+        while ($element = $dbItem->Fetch()) {
             $cacheManager->registerTag('iblock_id_'.$element['IBLOCK_ID']);
-            $this->arResult = $element;
-            $this->getImageUrl();
-        } else {
-            \Bitrix\Iblock\Component\Tools::process404('', true, true, true, '');
+            $this->arResult['ITEMS'][$element['ID']] = $element;
         }
+
         $cacheManager->endTagCache();
-    }
-
-    protected function getImageUrl()
-    {
-        if ($this->arParams['IMAGE_HEIGHT'] && $this->arParams['IMAGE_WIDTH']) {
-            $this->arResult['RESIZED_PICTURE_URL'] = $this->resizeImage();
-        } else {
-            $this->arResult['RESIZED_PICTURE_URL'] = \CFile::GetPath($this->arResult['DETAIL_PICTURE']);
-        }
-    }
-
-    protected function resizeImage()
-    {
-        $resizedPictureUrl = \CFile::ResizeImageGet(
-            $this->arResult['DETAIL_PICTURE'],
-            ['width' => $this->arParams['IMAGE_WIDTH'], 'height' => $this->arParams['IMAGE_HEIGHT']],
-            BX_RESIZE_IMAGE_PROPORTIONAL,
-            false,
-            false,
-            false,
-            false
-        );
-
-        return $resizedPictureUrl['src'];
     }
 }
