@@ -52,7 +52,6 @@ class CVekovNewsDetail extends CBitrixComponent
             }
             $this->includeComponentTemplate();
         } catch (Exception $e) {
-            $this->AbortResultCache();
             $this->arResult['ERROR'] = $e->getMessage();
         }
     }
